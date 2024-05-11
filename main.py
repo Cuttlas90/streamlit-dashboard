@@ -250,6 +250,35 @@ else:
             )
             st.altair_chart(chart_product, use_container_width=True)
 
+    ### sankey river chart
+
+
+    st.header('جریان هزینه-درآمد', divider='rainbow')
+    query_string = f"""SELECT q.\"rowTitle\", q.value, q.\"endToPeriod\"
+    FROM \"QuarterlyData\" q
+    JOIN (
+        SELECT stock_id, MAX(\"endToPeriod\") AS max_endToPeriod
+        FROM \"QuarterlyData\"
+        WHERE stock_id = (SELECT id FROM stocks WHERE name = '{name}')
+        AND \"reportTitle\" = 'سود و زیان'
+        GROUP BY stock_id
+    ) AS max_endToPeriods
+    ON q.stock_id = max_endToPeriods.stock_id
+    AND q.\"endToPeriod\" = max_endToPeriods.max_endToPeriod
+    WHERE q.stock_id = (SELECT id FROM stocks WHERE name = '{name}')
+    AND q."reportTitle" = 'سود و زیان';"""
+    error, stock_data = vasahm_query(query_string)
+    if error:
+        st.error(stock_data, icon="🚨")
+    else:
+        stock_data_history = pd.DataFrame(stock_data, columns=["rowTitle",
+                "value",
+                "endToPeriod"])
+        stock_data_history["endToPeriod"] = stock_data_history["endToPeriod"].astype(str)
+        stock_data_history["value"] = stock_data_history["value"].astype(float)
+
+        
+
     with tab2:
 
         st.header('گزارش ماهانه فروش - دلاری', divider='rainbow')

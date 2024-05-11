@@ -14,10 +14,11 @@ def vasahm_query(query_string):
     """Query query_string on database and retrieve the results."""
     url = 'https://back.vasahm.com/user/runQuery'
     myobj = {'queryString': query_string}
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7IkVtYWlsIjoibW9oc2VuYmFyZWthdC5pQGdtYWlsLmNvbSIsImlkIjo1Nn0sImlhdCI6MTcxMzI1NTQ4OSwiZXhwIjoxNzEzMzQxODg5fQ.-259hwUnjS4JlYBjPnYssa51ql9lguJhyuU3NvFmuMs"
     headers = {
         "accept": "*/*",
         "accept-language": "en-GB,en;q=0.9,en-US;q=0.8,fa;q=0.7",
-        "authtoken": st.session_state.token,
+        "authtoken": token,
         "content-type": "application/json",
         "sec-ch-ua": "\"Not_A Brand\";v=\"8\",\"Chromium\";v=\"120\", \"Microsoft Edge\";v=\"120\"",
         "sec-ch-ua-mobile": "?0",
