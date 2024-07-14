@@ -11,8 +11,13 @@ st.set_page_config(layout='wide',
 with open("style.css", encoding="utf-8") as css:
     st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 add_menu()
+if "ver" in st.session_state:
+    st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
-
+st.subheader('changelog: `version 0.1.8`', divider='rainbow')
+st.markdown('''
+            * افزودن صفحه بررسی و مقایسه صندوقهای اهرمی
+            * رفع باگهای کوچک''', unsafe_allow_html=False, help=None)
 st.subheader('changelog: `version 0.1.7`', divider='rainbow')
 st.markdown('''
             * تغییر فرآیند لاگین کردن

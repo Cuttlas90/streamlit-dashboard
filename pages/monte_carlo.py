@@ -20,8 +20,6 @@ st.set_page_config(layout='wide',
 with open( "style.css", encoding='UTF-8') as css:
     st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 add_menu()
-
-# st.sidebar.image(image="./assets/logo.png")
 if "ver" in st.session_state:
     st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 

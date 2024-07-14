@@ -5,7 +5,7 @@ import pandas as pd
 
 from pages.helper.query import Queries
 
-from login import check_local_token, login
+from login import check_local_token
 from request import vasahm_query
 from slider import create_range_slider
 from menu import add_menu
@@ -19,14 +19,11 @@ st.set_page_config(layout='wide',
 with open( "style.css", encoding='UTF-8') as css:
     st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 add_menu()
-
-
-st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
+if "ver" in st.session_state:
+    st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
 check_local_token()
-if "token" not in st.session_state:
-    login()
-else:
+if "token" in st.session_state:
     queries = Queries()
     has_error, data = vasahm_query(queries.QUERY_MONTHLY_COMPARE)
     if has_error:

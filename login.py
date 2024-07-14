@@ -39,8 +39,11 @@ def check_local_token():
             st.session_state["token"] = local_saved_token
         else:
             local_storage.deleteItem("saved_token")
+            _login()
+    else:
+        _login()
 
-def login():
+def _login():
     """start login process of a user"""
     get_email = st.form("get_email")
     get_email.text_input('ایمیل خود را وارد کنید',

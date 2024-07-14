@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-from login import check_local_token, login
+from login import check_local_token
 from request import index_price_history, index_price_history2
 from request import vasahm_query
 from menu import add_menu
@@ -20,7 +20,8 @@ st.set_page_config(layout='wide',
 with open("style.css", encoding="utf-8") as css:
     st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 add_menu()
-
+if "ver" in st.session_state:
+    st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
 df = pd.read_csv("data.csv").dropna()
 list_of_name = df['name'].to_list()
@@ -72,9 +73,7 @@ def create_form():
     portfolio_analyzer.form_submit_button("بررسی عملکرد سبد", on_click=add_submit_state)
 
 check_local_token()
-if "token" not in st.session_state:
-    login()
-else:
+if "token" in st.session_state:
     if "porto_submition" not in st.session_state:
         st.number_input('تعداد سهام موجود در سبد خود را وارد کنید',
                         min_value=1,
