@@ -52,7 +52,11 @@ check_local_token()
 if "token" in st.session_state:
     df = pd.read_csv("data.csv").dropna()
     list_of_name = df['name'].to_list()
-    name = st.sidebar.selectbox("لیست سهام", options = list_of_name)
+    if "stock" in st.query_params:
+        STOCK_INDEX = list_of_name.index(st.query_params.stock)
+    else:
+        STOCK_INDEX = 0
+    name = st.sidebar.selectbox("لیست سهام", options = list_of_name, index=STOCK_INDEX)
 
     queries = Queries(name)
 
