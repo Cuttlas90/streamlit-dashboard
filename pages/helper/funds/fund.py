@@ -3,7 +3,7 @@
 import json
 import requests
 import pandas as pd
-from funds.helper.helper import persianNumberToEnglish
+from helper.helper import persianNumberToEnglish
 
 class Fund():
     """Helper class for fund calculation"""
