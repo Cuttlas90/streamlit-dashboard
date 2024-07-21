@@ -6,8 +6,8 @@ import altair as alt
 
 from menu import add_menu
 
-from pages.helper.funds.fund import Fund
-from pages.helper.funds.metrics import Metrics
+from helper.funds.fund import Fund
+from helper.funds.metrics import Metrics
 
 st.set_page_config(layout='wide',
                    page_title="وسهم - بررسی صندوق های اهرمی",
