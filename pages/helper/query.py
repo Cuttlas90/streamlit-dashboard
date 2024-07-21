@@ -556,6 +556,50 @@ class Queries():
         if dollar:
             string = self._dollar_query(string)
         return string
+    
+    def get_quarterly_investment_sell_and_profit(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                        INNER JOIN table_code ON public.all_data.table_id = table_code.id
+                    where
+                        public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and stocks.name = '{self.name}'
+                        and (public.report_list.\"letterCode\" = 'ن-۱۰')
+                        and public.all_data.deleted = false
+                        and table_code.sheet_id = 1
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+    
+    def get_quarterly_banking_sell_and_profit(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                        INNER JOIN table_code ON public.all_data.table_id = table_code.id
+                    where
+                        public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and stocks.name = '{self.name}'
+                        and (public.report_list.\"letterCode\" = 'ن-۱۰')
+                        and public.all_data.deleted = false
+                        and table_code.sheet_id = 1
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
 
     def get_quarterly_profit_ratio(self, dollar = False):
         """return query to monthly sell value data"""
@@ -570,6 +614,50 @@ class Queries():
                         INNER JOIN table_code ON public.all_data.table_id = table_code.id
                     where
                         public.all_data.row_title IN ('درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and stocks.name = '{self.name}'
+                        and (public.report_list.\"letterCode\" = 'ن-۱۰')
+                        and public.all_data.deleted = false
+                        and table_code.sheet_id = 1
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+    
+    def get_quarterly_investment_profit_ratio(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                        INNER JOIN table_code ON public.all_data.table_id = table_code.id
+                    where
+                        public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and public.all_data.sell_type IN ('درآمدهای عملیاتی','هزینه های عملیاتی')
+                        and stocks.name = '{self.name}'
+                        and (public.report_list.\"letterCode\" = 'ن-۱۰')
+                        and public.all_data.deleted = false
+                        and table_code.sheet_id = 1
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+    def get_quarterly_banking_profit_ratio(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                        INNER JOIN table_code ON public.all_data.table_id = table_code.id
+                    where
+                        public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
                         and stocks.name = '{self.name}'
                         and (public.report_list.\"letterCode\" = 'ن-۱۰')
                         and public.all_data.deleted = false
