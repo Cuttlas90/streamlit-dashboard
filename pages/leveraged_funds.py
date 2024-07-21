@@ -6,8 +6,9 @@ import altair as alt
 
 from menu import add_menu
 
-from helper.funds.fund import Fund
-from helper.funds.metrics import Metrics
+from pages.helper.funds.fund import Fund
+from pages.helper.funds.main import get_levereged_fund_list
+from pages.helper.funds.metrics import Metrics
 
 st.set_page_config(layout='wide',
                    page_title="وسهم - بررسی صندوق های اهرمی",
@@ -20,8 +21,7 @@ add_menu()
 if "ver" in st.session_state:
     st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
-FILE_PATH = "./funds/fund_data.csv"
-df = pd.read_csv(FILE_PATH, header=0)
+df = get_levereged_fund_list()
 metrics = Metrics()
 funds = []
 for index, row  in df.iterrows():
