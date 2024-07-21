@@ -1,11 +1,12 @@
 """fund class use for calculating funds parameters"""
 # from datetime import datetime
-import requests
 import json
+import requests
 import pandas as pd
 from funds.helper.helper import persianNumberToEnglish
 
 class Fund():
+    """Helper class for fund calculation"""
     def __init__(self, name, fund_address, code, metrics):
         self.name = name
         self.fund_address = fund_address
@@ -46,7 +47,7 @@ class Fund():
         if len(json_object[2]['List']) >= 23:
             self.performance["ماهانه"]=(json_object[2]['List'][22]["y"]-json_object[2]['List'][0]["y"])/json_object[2]['List'][0]["y"]
         else:
-           self.performance["ماهانه"]=0
+            self.performance["ماهانه"]=0
         if len(json_object[2]['List']) >= 67:
             self.performance["فصلی"]=(json_object[2]['List'][66]["y"]-json_object[2]['List'][0]["y"])/json_object[2]['List'][0]["y"]
         else:
@@ -74,13 +75,17 @@ class Fund():
     def alpha(self, benchmark):
         return self.metric.alpha(self, benchmark)
     def r_squared(self, benchmark):
+        "calculate r squared value of fund"
         return self.metric.r_squared(self, benchmark)
     def treynor_ratio(self, risk_free_rate):
+        "calculate treynor ratio of fund"
         return self.metric.treynor_ratio(self, risk_free_rate)
     def jensens_alpha(self, benchmark):
+        "calculate jensens alpha of fund"
         return self.metric.jensens_alpha(self, benchmark)
     def capture_ratio(self, benchmark):
+        "calculate capture ratio of fund"
         return self.metric.capture_ratio(self, benchmark)
     def drawdown_analysis(self):
+        "calculate drawdown of fund"
         return self.metric.drawdown_analysis(self)
-

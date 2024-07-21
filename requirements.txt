@@ -48,7 +48,7 @@ validators==0.22.0
 watchdog==3.0.0
 zipp==3.17.0
 pylint
-streamlit-local-storage
+streamlit-local-storage==0.0.23
 matplotlib==3.8.4
 seaborn
 scipy

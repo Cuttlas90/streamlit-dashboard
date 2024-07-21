@@ -6,8 +6,8 @@ import altair as alt
 
 from menu import add_menu
 
-from funds.fund import Fund
-from funds.metrics import Metrics
+from pages.helper.funds.fund import Fund
+from pages.helper.funds.metrics import Metrics
 
 st.set_page_config(layout='wide',
                    page_title="وسهم - بررسی صندوق های اهرمی",
@@ -27,6 +27,7 @@ funds = []
 for index, row  in df.iterrows():
     try:
         funds.append(Fund(row["name"], row["url"], row["code"], metrics))
+    # pylint: disable=bare-except
     except:
         pass
 
@@ -100,10 +101,15 @@ with col2:
     st.header('عملکرد صندوقها', divider='rainbow')
     chart = alt.Chart(performance_df).mark_bar().encode(
                         alt.X('time:N', title='زمان', axis=alt.Axis(labelAngle=0)),
-                        alt.Y('perfor:Q', title="میزان دارایی نقد و اوراق",axis=alt.Axis(grid=False)).axis(format='%'),
+                        alt.Y('perfor:Q',
+                              title="میزان دارایی نقد و اوراق",
+                              axis=alt.Axis(grid=False)).axis(format='%'),
                         alt.Color('fund:N', title='نام صندوق'),
                         alt.XOffset('fund:N', title='نام صندوق'),
-                        tooltip=[alt.Tooltip("perfor:Q", format=",.2%", title='عملکرد'), alt.Tooltip("fund:N",  title='صندوق'),]
+                        tooltip=[
+                            alt.Tooltip("perfor:Q", format=",.2%", title='عملکرد'),
+                            alt.Tooltip("fund:N",  title='صندوق'),
+                            ]
                     )
 
     chart_product = alt.layer(chart).resolve_scale(color='independent')

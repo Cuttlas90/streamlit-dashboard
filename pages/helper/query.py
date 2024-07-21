@@ -92,6 +92,449 @@ class Queries():
         """
         return string
 
+    def get_monthly_energy_consumption(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    enery_type As row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    public.all_data.enery_type is not null
+                    and all_data.enery_type != ''
+                    and all_data.column_title = 'مبلغ - میلیون ریال'
+                    and stocks.name = '{self.name}'
+                    and public.report_list.\"letterCode\" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_construnction_income(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                    where
+                        stocks.name = '{self.name}'
+                        and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                        and public.all_data.deleted = false
+                        and public.all_data.column_title LIKE '%درآمد محقق شده طی دوره یک ماهه منتهی به%'
+                        and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+    """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_banking_income(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                    where
+                        stocks.name = '{self.name}'
+                        and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                        and public.all_data.deleted = false
+                        and public.all_data.column_title like '%درآمد محقق شده طی دوره یک ماهه منتهی به%'
+                        and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+    """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_banking_loan_income(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                    where
+                        stocks.name = '{self.name}'
+                        and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                        and public.all_data.deleted = false
+                        and public.all_data.column_title like '%درآمد تسهیلات اعطایی طی دوره یک ماهه منتهی%'
+                        and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+    """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_banking_change_bond_invest(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                    where
+                        stocks.name = '{self.name}'
+                        and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                        and public.all_data.deleted = false
+                        and public.all_data.column_title like '%خالص افزایش(کاهش) در سرمایه گذاری در اوراق بدهی%'
+                        and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+    """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_banking_change_stock_invest(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                    where
+                        stocks.name = '{self.name}'
+                        and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                        and public.all_data.deleted = false
+                        and public.all_data.column_title like '%افزایش(کاهش) سرمایه گذاری ها%'
+                        and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+    """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_banking_cost(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                    where
+                        stocks.name = '{self.name}'
+                        and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                        and public.all_data.table_id = 79
+                        and public.all_data.deleted = false
+                        and public.all_data.column_title like '%هزینه محقق شده طی دوره یک ماهه%'
+                        and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                        and public.all_data.row_title not LIKE '%مامی اقلام هزینه های عملیاتی در صورت سود وزیان نمی باشد%'
+    """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_banking_financial_cost(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                    where
+                        stocks.name = '{self.name}'
+                        and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                        and public.all_data.table_id = 81
+                        and public.all_data.deleted = false
+                        and public.all_data.column_title like '%هزینه محقق شده طی دوره یک ماهه%'
+                        and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                        and public.all_data.row_title not LIKE '%مامی اقلام هزینه های عملیاتی در صورت سود وزیان نمی باشد%'
+    """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_banking_paid_interest(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                    where
+                        stocks.name = '{self.name}'
+                        and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                        and public.all_data.deleted = false
+                        and public.all_data.column_title like '%سود سپرده های سرمایه گذاری طی دوره%'
+                        and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+    """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_insurance_recieve(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title = 'حق بیمه صادره (شامل قبولی اتکایی)مبلغ (میلیون ریال)'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_investment_income(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title like '%دوره یک ماهه منتهی به%'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_investment_sector(self):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+					and public.all_data.table_id = 57
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+					and public.all_data.end_to_period = (
+																SELECT MAX(all_data.end_to_period)
+																from
+																	public.all_data
+																	INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+																	INNER JOIN report_list ON public.all_data.report_id = report_list.id
+																where
+																	stocks.name = '{self.name}'
+																	and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+															  )
+					and public.all_data.column_title = 'کل سرمایه گذاری در سهامانتهای دورهبهای تمام شده'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                    """
+
+        return string
+
+    def get_monthly_investment_stocks(self):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+					and public.all_data.end_to_period = (
+																SELECT MAX(all_data.end_to_period)
+																from
+																	public.all_data
+																	INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+																	INNER JOIN report_list ON public.all_data.report_id = report_list.id
+																where
+																	stocks.name = '{self.name}'
+																	and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+															  )
+					and public.all_data.column_title = 'انتهای دورهارزش بازار'
+                    and public.all_data.row_title NOT IN ('اوراق خزانه (پذیرفته نشده در بازار سرمایه)','اوراق مشارکت (پذیرفته نشده در بازار سرمایه)','سایر اوراق بهادار:','جمع سرمایه گذاری در املاک','پروژه در جریان ساخت','سرمایه  گذاری در املاک:','جمع سپرده هاى  سرمایه گذارى بانکی','سپرده هاى  سرمایه گذارى بانکی:','جمع اوراق مشتقه و تامین مالی پذیرفته شده در بورس و فرابورس','سرمایه گذاری در اوراق مشتقه و تامین مالی پذیرفته شده در بورس و فرابورس:','جمع  اوراق بهادار پذیرفته شده در بورس های کالایی و انرژی','سرمایه گذاری در اوراق بهادار پذیرفته شده در بورس های کالایی و انرژی:','جمع واحدهای صندوق های سرمایه  گذاری','سرمایه گذاری در واحدهای صندوق های سرمایه  گذاری:','جمع سهام پذیرفته شده در بورس و فرابورس','سهام درج شده در بازارهای پایه فرایورس','جمع سهام درج شده در بازارهای پایه فرایورس','سهام پذیرفته شده در بورس و فرابورس','برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                    """
+        return string
+
+    def get_monthly_insurance_payment(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title = 'خسارت پرداختیمبلغ (میلیون ریال)'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_leasing_income(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title LIKE '%درآمد محقق شده طی دوره یک ماهه منتهی به%'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_leasing_financial_cost(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title = 'هزینه محقق شده طی ماه'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_leasing_loan_out_no(self):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title = 'تعداد تسهیلات ایجاد شده'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                    and public.all_data.row_title NOT LIKE '%نوع کالاهای واگذار شده در بخش اطلاعات پایه در سیستم وارد شود%'
+                """
+        return string
+
+
+    def get_monthly_leasing_loan_in_no(self):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title = 'تعداد تسهیلات تسویه شده'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                    and public.all_data.row_title NOT LIKE '%نوع کالاهای واگذار شده در بخش اطلاعات پایه در سیستم وارد شود%'
+                """
+        return string
+
+    def get_monthly_leasing_loan_in_vol(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title = 'مبلغ اصل و فرع اقساط وصولی'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                    and public.all_data.row_title NOT LIKE '%نوع کالاهای واگذار شده در بخش اطلاعات پایه در سیستم وارد شود%'
+                """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
+    def get_monthly_leasing_loan_out_vol(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                    row_title,
+                    value,
+                    end_to_period
+                from
+                    public.all_data
+                    INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                    INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                where
+                    stocks.name = '{self.name}'
+                    and public.report_list."letterCode" IN ( 'ن-۳۰', 'ن-۳۱')
+                    and public.all_data.deleted = false
+                    and public.all_data.column_title = 'مبلغ اصل و فرع تسهیلات اعطایی'
+                    and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
+                    and public.all_data.row_title NOT LIKE '%نوع کالاهای واگذار شده در بخش اطلاعات پایه در سیستم وارد شود%'
+                """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+
     def get_quarterly_sell_and_profit(self, dollar = False):
         """return query to monthly sell value data"""
         string = f"""select
@@ -105,6 +548,50 @@ class Queries():
                         INNER JOIN table_code ON public.all_data.table_id = table_code.id
                     where
                         public.all_data.row_title IN ('درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and stocks.name = '{self.name}'
+                        and (public.report_list.\"letterCode\" = 'ن-۱۰')
+                        and public.all_data.deleted = false
+                        and table_code.sheet_id = 1
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+    
+    def get_quarterly_investment_sell_and_profit(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                        INNER JOIN table_code ON public.all_data.table_id = table_code.id
+                    where
+                        public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and stocks.name = '{self.name}'
+                        and (public.report_list.\"letterCode\" = 'ن-۱۰')
+                        and public.all_data.deleted = false
+                        and table_code.sheet_id = 1
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+    
+    def get_quarterly_banking_sell_and_profit(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                        INNER JOIN table_code ON public.all_data.table_id = table_code.id
+                    where
+                        public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
                         and stocks.name = '{self.name}'
                         and (public.report_list.\"letterCode\" = 'ن-۱۰')
                         and public.all_data.deleted = false
@@ -135,6 +622,50 @@ class Queries():
         if dollar:
             string = self._dollar_query(string)
         return string
+    
+    def get_quarterly_investment_profit_ratio(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                        INNER JOIN table_code ON public.all_data.table_id = table_code.id
+                    where
+                        public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and public.all_data.sell_type IN ('درآمدهای عملیاتی','هزینه های عملیاتی')
+                        and stocks.name = '{self.name}'
+                        and (public.report_list.\"letterCode\" = 'ن-۱۰')
+                        and public.all_data.deleted = false
+                        and table_code.sheet_id = 1
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
+    def get_quarterly_banking_profit_ratio(self, dollar = False):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        row_title,
+                        value,
+                        end_to_period
+                    from
+                        public.all_data
+                        INNER JOIN stocks ON public.all_data.stock_id = stocks.id
+                        INNER JOIN report_list ON public.all_data.report_id = report_list.id
+                        INNER JOIN table_code ON public.all_data.table_id = table_code.id
+                    where
+                        public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and stocks.name = '{self.name}'
+                        and (public.report_list.\"letterCode\" = 'ن-۱۰')
+                        and public.all_data.deleted = false
+                        and table_code.sheet_id = 1
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
 
     def _dollar_query(self, text):
         query_string = f"""WITH
@@ -143,7 +674,7 @@ class Queries():
         )
         select
             row_title,
-            value::float / dollar.close * 1000000 As dollar_value,
+            value::float / dollar.close As value,
             end_to_period
         from
             ranked_dates

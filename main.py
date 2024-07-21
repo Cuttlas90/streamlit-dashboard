@@ -7,11 +7,13 @@ import pandas as pd
 import altair as alt
 
 from login import check_local_token
+from pages.helper.monthly_chart import add_monthly_charts
+from pages.helper.quarterly_chart import add_quaterly_charts
+from pages.helper.query import Queries
 from request import vasahm_query
 from menu import add_menu
 from text_constant import MAIN_PAGE
 
-from pages.helper.query import Queries
 
 st.set_page_config(layout='wide',
                     page_title="وسهم",
@@ -45,19 +47,22 @@ alt.themes.enable('sfmono')
 
 add_menu()
 st.components.v1.html(MAIN_PAGE, height=60, scrolling=False)
-# st.sidebar.image(image="./assets/logo.png")
+df = pd.read_csv("data.csv").dropna()
+list_of_name = df['name'].to_list()
+if "stock" in st.query_params:
+    STOCK_INDEX = list_of_name.index(st.query_params.stock)
+else:
+    STOCK_INDEX = 0
+name = st.sidebar.selectbox("لیست سهام", options = list_of_name, index=STOCK_INDEX)
+selected_stock = df.iloc[df.loc[df['name'] == name].index[0]]
+dollar_toggle = st.sidebar.toggle(
+    "نمایش به دلار",
+    help="با فعال کردن این گزینه تمامی مبالغ بر اساس دلار بازمحاسبه می گردد."
+    )
 st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
 check_local_token()
 if "token" in st.session_state:
-    df = pd.read_csv("data.csv").dropna()
-    list_of_name = df['name'].to_list()
-    if "stock" in st.query_params:
-        STOCK_INDEX = list_of_name.index(st.query_params.stock)
-    else:
-        STOCK_INDEX = 0
-    name = st.sidebar.selectbox("لیست سهام", options = list_of_name, index=STOCK_INDEX)
-
     queries = Queries(name)
 
     error, stock_data = vasahm_query(queries.get_stock_data())
@@ -66,247 +71,26 @@ if "token" in st.session_state:
     else:
         col1, col2, col3, col4 = st.columns(4)
         try:
-            col1.metric("سود سهم", f"{stock_data[0]['estimatedEPS']}")
-            col2.metric("نسبت سود به قیمت", f"{format(float(stock_data[0]['pe']), '.2f')}")
-            col3.metric("P/E صنعت", f"{format(float(stock_data[0]['sectorPE']), '.2f')}")
-            col4.metric("درصد سهامداران عمده", f"{format(stock_data[0]['all_holder_percent'], '.2f')}")
+            col1.metric(
+                "سود سهم",
+                f"{stock_data[0]['estimatedEPS']}"
+                )
+            col2.metric(
+                "P/E سهم",
+                f"{format(float(stock_data[0]['pe']), '.2f')}"
+                )
+            col3.metric(
+                "P/E صنعت",
+                f"{format(float(stock_data[0]['sectorPE']), '.2f')}"
+                )
+            col4.metric(
+                "درصد سهامداران عمده",
+                f"{format(stock_data[0]['all_holder_percent'], '.2f')}"
+                )
+        # pylint: disable=bare-except
         except:
             pass
 
-    tab1, tab2 = st.tabs(["بر اساس ریال", "بر اساس دلار"])
 
-    with tab1:
-
-        st.header('گزارش ماهانه فروش', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_monthly_sell_value_data())
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-                "value",
-                "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            # specify the type of selection, here single selection is used
-            selector = alt.selection_single(encodings=['x', 'color'])
-
-            chart = alt.Chart(stock_data_history).mark_bar().encode(
-                alt.Color('row_title:N', title="سرفصلها"),
-                alt.Y('sum(value):Q', title="مبلغ (میلیون ریال)"),
-                alt.X('end_to_period:N',title="تاریخ")
-            )
-            st.altair_chart(chart, use_container_width=True)
-
-
-        st.header('گزارش تعداد تولید', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_monthly_production_value_data())
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-                "value",
-                "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            # specify the type of selection, here single selection is used
-            selector = alt.selection_single(encodings=['x', 'color'])
-
-            chart_product = alt.Chart(stock_data_history).mark_bar().encode(
-                alt.Color('row_title:N', title="سرفصلها"),
-                alt.Y('sum(value):Q', title="تعداد"),
-                alt.X('end_to_period:N',title="تاریخ")
-            )
-            st.altair_chart(chart_product, use_container_width=True)
-
-        st.header('گزارش تعداد فروش', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_monthly_sell_no_data())
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-                "value",
-                "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            # specify the type of selection, here single selection is used
-            selector = alt.selection_single(encodings=['x', 'color'])
-
-            chart_product = alt.Chart(stock_data_history).mark_bar().encode(
-                alt.Color('row_title:N', title="سرفصلها"),
-                alt.Y('sum(value):Q', title="تعداد"),
-                alt.X('end_to_period:N',title="تاریخ")
-            )
-            st.altair_chart(chart_product, use_container_width=True)
-
-
-        st.header('درآمدهای عملیاتی و سود', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_quarterly_sell_and_profit())
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-                "value",
-                "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            # specify the type of selection, here single selection is used
-            chart2 = alt.Chart(stock_data_history).mark_area(opacity=0.3).encode(
-                alt.Color('row_title:N', title="سرفصلها"),
-                alt.Y('value:Q', title="مبلغ (میلیون ریال)").stack(None),
-                alt.X('end_to_period:N',title="تاریخ")
-            )
-            st.altair_chart(chart2, use_container_width=True)
-
-
-        st.header('حاشیه سود خالص', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_quarterly_profit_ratio())
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-                "value",
-                "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            stock_data_history["value"] = stock_data_history["value"].astype(float)
-            pivot_df = stock_data_history.pivot_table(index='end_to_period',
-                                                    columns='row_title',
-                                                    values='value',
-                                                    aggfunc='sum').reset_index()
-
-            pivot_df["profit_ratio"] = (pivot_df["سود(زیان) خالص"].astype(float)
-                                        /pivot_df["درآمدهای عملیاتی"].astype(float))
-            pe_df=pivot_df[["profit_ratio", "end_to_period"]]
-
-            chart_product = alt.Chart(pivot_df).mark_line().encode(
-                    alt.X('end_to_period:N', title='تاریخ'),
-                    alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
-                    # alt.Color('column_name:N', title='دسته ها'),
-
-                )
-            chart_product.configure_title(
-                        fontSize=20,
-                        font='Vazirmatn',
-                    )
-
-            chart_product.configure(
-                font='Vazirmatn'
-            )
-            st.altair_chart(chart_product, use_container_width=True)
-
-    with tab2:
-
-        st.header('گزارش ماهانه فروش - دلاری', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_monthly_sell_value_data(dollar=True))
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-            "dollar_value",
-            "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            # specify the type of selection, here single selection is used
-            selector = alt.selection_single(encodings=['x', 'color'])
-
-            chart = alt.Chart(stock_data_history).mark_bar().encode(
-                alt.Color('row_title:N', title="سرفصلها"),
-                alt.Y('sum(dollar_value):Q', title="مبلغ (میلیون دلار)"),
-                alt.X('end_to_period:N',title="تاریخ")
-            )
-            st.altair_chart(chart, use_container_width=True)
-
-
-        st.header('گزارش تعداد تولید', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_monthly_production_value_data())
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-            "value",
-            "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            # specify the type of selection, here single selection is used
-            selector = alt.selection_single(encodings=['x', 'color'])
-
-            chart_product = alt.Chart(stock_data_history).mark_bar().encode(
-                alt.Color('row_title:N', title="سرفصلها"),
-                alt.Y('sum(value):Q', title="تعداد"),
-                alt.X('end_to_period:N',title="تاریخ")
-            )
-            st.altair_chart(chart_product, use_container_width=True)
-
-        st.header('گزارش تعداد فروش', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_monthly_sell_no_data())
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-            "value",
-            "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            # specify the type of selection, here single selection is used
-            selector = alt.selection_single(encodings=['x', 'color'])
-
-            chart_product = alt.Chart(stock_data_history).mark_bar().encode(
-                alt.Color('row_title:N', title="سرفصلها"),
-                alt.Y('sum(value):Q', title="تعداد"),
-                alt.X('end_to_period:N',title="تاریخ")
-            )
-            st.altair_chart(chart_product, use_container_width=True)
-
-
-        st.header('درآمدهای عملیاتی و سود - دلاری', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_quarterly_sell_and_profit(dollar=True))
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-            "dollar_value",
-            "end_to_period"])
-
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            # specify the type of selection, here single selection is used
-            chart2 = alt.Chart(stock_data_history).mark_area(opacity=0.3).encode(
-                alt.Color('row_title:N', title="سرفصلها"),
-                alt.Y('dollar_value:Q', title="مبلغ (میلیون دلار)").stack(None),
-                alt.X('end_to_period:N',title="تاریخ")
-            )
-
-            st.altair_chart(chart2, use_container_width=True)
-
-        st.header('حاشیه سود خالص - دلاری', divider='rainbow')
-
-        error, stock_data = vasahm_query(queries.get_quarterly_profit_ratio(dollar=True))
-        if error:
-            st.error(stock_data, icon="🚨")
-        else:
-            stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
-            "dollar_value",
-            "end_to_period"])
-            stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-            pivot_df = stock_data_history.pivot_table(index='end_to_period',
-                                                    columns='row_title',
-                                                    values='dollar_value',
-                                                    aggfunc='sum').reset_index()
-            pivot_df["profit_ratio"] = (pivot_df["سود(زیان) خالص"].astype(float)
-                                        /pivot_df["درآمدهای عملیاتی"].astype(float))
-
-            chart_product = alt.Chart(pivot_df,
-                                    height=600).mark_line().encode(
-                            alt.X('end_to_period:N', title='تاریخ'),
-                            alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
-                            # alt.Color('column_name:N', title='دسته ها'),
-                        )
-            chart_product.configure_title(
-                        fontSize=20,
-                        font='Vazirmatn',
-                    )
-
-            chart_product.configure(
-                font='Vazirmatn'
-            )
-            st.altair_chart(chart_product, use_container_width=True)
+    add_monthly_charts(selected_stock, dollar_toggle)
+    add_quaterly_charts(selected_stock, dollar_toggle)
