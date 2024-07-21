@@ -6,7 +6,7 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-from login import check_local_token, login
+from login import check_local_token
 from request import vasahm_query
 from menu import add_menu
 from text_constant import MAIN_PAGE
@@ -17,7 +17,7 @@ st.set_page_config(layout='wide',
                     page_title="وسهم",
                     page_icon="./assets/favicon.ico",
                     initial_sidebar_state='expanded')
-st.session_state.ver = '0.1.7'
+st.session_state.ver = '0.1.8'
 
 STREAMLIT_STATIC_PATH = Path(st.__path__[0]) / "static/static"
 CSS_PATH = STREAMLIT_STATIC_PATH / "media/"
@@ -49,12 +49,14 @@ st.components.v1.html(MAIN_PAGE, height=60, scrolling=False)
 st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
 check_local_token()
-if "token" not in st.session_state:
-    login()
-else:
+if "token" in st.session_state:
     df = pd.read_csv("data.csv").dropna()
     list_of_name = df['name'].to_list()
-    name = st.sidebar.selectbox("لیست سهام", options = list_of_name)
+    if "stock" in st.query_params:
+        STOCK_INDEX = list_of_name.index(st.query_params.stock)
+    else:
+        STOCK_INDEX = 0
+    name = st.sidebar.selectbox("لیست سهام", options = list_of_name, index=STOCK_INDEX)
 
     queries = Queries(name)
 

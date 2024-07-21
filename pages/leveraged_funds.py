@@ -17,8 +17,6 @@ st.set_page_config(layout='wide',
 with open( "style.css", encoding='UTF-8') as css:
     st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 add_menu()
-
-# st.sidebar.image(image="./assets/logo.png")
 if "ver" in st.session_state:
     st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
@@ -89,11 +87,26 @@ with col1:
     chart_product = alt.layer(chart, labels).resolve_scale(color='independent')
     st.altair_chart(chart_product, use_container_width=True)
 
-# with col2:
-#     st.header('میزان دارایی نقد و اوراق', divider='rainbow')
-#     chart = alt.Chart(funds_df).mark_bar().encode(
-#                         alt.X('name:N', title='نام صندوق'),
-#                         alt.Y('performance:Q', title="میزان دارایی نقد و اوراق").axis(format='%'),
-#                         alt.Color('name:N', title='نام صندوق'),
-#                     )
-#     st.altair_chart(chart, use_container_width=True)
+with col2:
+    d = []
+    for index, row in funds_df.iterrows():
+        for key, value in row["performance"].items():
+            d.append({
+                "fund": row["name"],
+                "time": key,
+                "perfor": value
+            })
+    performance_df = pd.DataFrame(d)
+    st.header('عملکرد صندوقها', divider='rainbow')
+    chart = alt.Chart(performance_df).mark_bar().encode(
+                        alt.X('time:N', title='زمان', axis=alt.Axis(labelAngle=0)),
+                        alt.Y('perfor:Q', title="میزان دارایی نقد و اوراق",axis=alt.Axis(grid=False)).axis(format='%'),
+                        alt.Color('fund:N', title='نام صندوق'),
+                        alt.XOffset('fund:N', title='نام صندوق'),
+                        tooltip=[alt.Tooltip("perfor:Q", format=",.2%", title='عملکرد'), alt.Tooltip("fund:N",  title='صندوق'),]
+                    )
+
+    chart_product = alt.layer(chart).resolve_scale(color='independent')
+    st.altair_chart(chart_product, use_container_width=True)
+
+# InvalidHeader
