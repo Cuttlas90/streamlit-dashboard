@@ -8,7 +8,7 @@ import altair as alt
 
 from login import check_local_token
 from pages.helper.monthly_chart import add_monthly_charts
-from pages.helper.quarterly_chart import add_quaterly_charts
+from pages.helper.quarterly_chart import add_quartely_charts
 from pages.helper.query import Queries
 from request import vasahm_query
 from menu import add_menu
@@ -93,4 +93,4 @@ if "token" in st.session_state:
 
 
     add_monthly_charts(selected_stock, dollar_toggle)
-    add_quaterly_charts(selected_stock, dollar_toggle)
+    add_quartely_charts(selected_stock, dollar_toggle)
