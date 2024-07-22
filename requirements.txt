@@ -55,4 +55,4 @@ scipy
 python-bidi == 0.4.2
 arabic_reshaper
 statsmodels
-finta
+finta==1.3
