@@ -19,7 +19,7 @@ st.set_page_config(layout='wide',
                     page_title="وسهم",
                     page_icon="./assets/favicon.ico",
                     initial_sidebar_state='expanded')
-st.session_state.ver = '0.1.8'
+st.session_state.ver = '0.1.9'
 
 STREAMLIT_STATIC_PATH = Path(st.__path__[0]) / "static/static"
 CSS_PATH = STREAMLIT_STATIC_PATH / "media/"
