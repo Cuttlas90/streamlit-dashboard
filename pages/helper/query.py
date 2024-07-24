@@ -24,9 +24,10 @@ class Queries():
             """
         return string
 
-    def get_daily_social(self):
+    def get_daily_social(self, source):
         """return query to monthly sell value data"""
         string = f"""select
+                        index,
                         number,
                         date
                     from
@@ -34,6 +35,7 @@ class Queries():
                         INNER JOIN stocks ON public.social_data.stock_id = stocks.id
                     where
                         stocks.name = '{self.name}'
+                        and source = '{source}'
                     LIMIT
 						30
 

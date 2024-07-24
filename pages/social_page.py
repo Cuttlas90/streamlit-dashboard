@@ -32,13 +32,13 @@ if "token" in st.session_state:
 
     queries = Queries(name)
 
-    error, stock_data = vasahm_query(queries.get_daily_social())
+    error, stock_data = vasahm_query(queries.get_daily_social('sahamyab'))
     if error:
         st.error(stock_data, icon="🚨")
     else:
         if len(stock_data) > 0:
-            st.header("اقبال به سهم", divider='rainbow')
-            stock_data_history = pd.DataFrame(stock_data, columns=[
+            st.header("اقبال به سهم - سهامیاب", divider='rainbow')
+            stock_data_history = pd.DataFrame(stock_data, columns=["index",
             "number",
             "date"])
             # stock_data_history["date"] = stock_data_history[
@@ -46,6 +46,23 @@ if "token" in st.session_state:
 
             chart = alt.Chart(stock_data_history).mark_bar().encode(
                 # alt.Color('row_title:N', title="سرفصلها"),
+                alt.Y('number:Q', title="تعداد کامنت"),
+                alt.X('date:N',title="تاریخ")
+            )
+            st.altair_chart(chart, use_container_width=True)
+    
+    error, stock_data = vasahm_query(queries.get_daily_social('rahavard'))
+    if error:
+        st.error(stock_data, icon="🚨")
+    else:
+        if len(stock_data) > 0:
+            st.header("اقبال به سهم - رهآورد", divider='rainbow')
+            stock_data_history = pd.DataFrame(stock_data, columns=["index",
+            "number",
+            "date"])
+
+            chart = alt.Chart(stock_data_history).mark_bar().encode(
+                alt.Color('index:N', title="سرفصلها"),
                 alt.Y('number:Q', title="تعداد کامنت"),
                 alt.X('date:N',title="تاریخ")
             )
