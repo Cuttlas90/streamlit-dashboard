@@ -24,6 +24,21 @@ class Queries():
             """
         return string
 
+    def get_daily_social(self):
+        """return query to monthly sell value data"""
+        string = f"""select
+                        number,
+                        date
+                    from
+                        public.social_data
+                        INNER JOIN stocks ON public.social_data.stock_id = stocks.id
+                    where
+                        stocks.name = '{self.name}'
+                    LIMIT
+						30
+
+        """
+        return string
     def get_monthly_sell_value_data(self, dollar = False):
         """return query to monthly sell value data"""
         string = f"""select
