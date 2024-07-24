@@ -7,7 +7,7 @@ import altair as alt
 from login import check_local_token
 from pages.helper.query import Queries
 from request import vasahm_query
-from menu import add_menu
+from menu import add_list_selector, add_menu
 
 
 
@@ -22,14 +22,7 @@ with open( "style.css", encoding="UTF-8") as css:
 
 add_menu()
 
-df = pd.read_csv("data.csv").dropna()
-list_of_name = df['name'].to_list()
-if "stock" in st.query_params:
-    STOCK_INDEX = list_of_name.index(st.query_params.stock)
-else:
-    STOCK_INDEX = 0
-name = st.sidebar.selectbox("لیست سهام", options = list_of_name, index=STOCK_INDEX)
-selected_stock = df.iloc[df.loc[df['name'] == name].index[0]]
+name, _ = add_list_selector()
 
 if "ver" in st.session_state:
     st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
