@@ -143,7 +143,6 @@ def add_ta_metrics(stock_data_history, data,metric_label, col, place, num, ind):
     elif ind == "UO":
         smas = TA.UO(stock_data_history)
         sma_df = pd.DataFrame(smas)
-        st.write(sma_df.iloc[-1][col])
         place.metric(label=metric_label, value = int(sma_df.iloc[-1][col]), delta = int(sma_df.iloc[-1][col]-sma_df.iloc[-2][col]))
         _update_guage(num, sma_df.iloc[-1][col], stock_data_history.iloc[-1]['close'], ind)
         return num
