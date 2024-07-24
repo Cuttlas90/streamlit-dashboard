@@ -3,7 +3,6 @@ from pathlib import Path
 import shutil
 
 import streamlit as st
-import pandas as pd
 import altair as alt
 
 from login import check_local_token
@@ -11,7 +10,7 @@ from pages.helper.monthly_chart import add_monthly_charts
 from pages.helper.quarterly_chart import add_quartely_charts
 from pages.helper.query import Queries
 from request import vasahm_query
-from menu import add_menu
+from menu import add_list_selector, add_menu
 from text_constant import MAIN_PAGE
 
 
@@ -47,14 +46,8 @@ alt.themes.enable('sfmono')
 
 add_menu()
 st.components.v1.html(MAIN_PAGE, height=60, scrolling=False)
-df = pd.read_csv("data.csv").dropna()
-list_of_name = df['name'].to_list()
-if "stock" in st.query_params:
-    STOCK_INDEX = list_of_name.index(st.query_params.stock)
-else:
-    STOCK_INDEX = 0
-name = st.sidebar.selectbox("لیست سهام", options = list_of_name, index=STOCK_INDEX)
-selected_stock = df.iloc[df.loc[df['name'] == name].index[0]]
+
+name, selected_stock = add_list_selector()
 dollar_toggle = st.sidebar.toggle(
     "نمایش به دلار",
     help="با فعال کردن این گزینه تمامی مبالغ بر اساس دلار بازمحاسبه می گردد."
