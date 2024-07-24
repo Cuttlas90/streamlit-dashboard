@@ -14,6 +14,11 @@ add_menu()
 if "ver" in st.session_state:
     st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
+st.subheader('changelog: `version 0.1.9`', divider='rainbow')
+st.markdown('''
+            * افزودن صفحه اظلاعات تکنیکال
+            * افزودن صفحه اطلاعات رفتاری
+            * رفع باگهای کوچک''', unsafe_allow_html=False, help=None)
 st.subheader('changelog: `version 0.1.8`', divider='rainbow')
 st.markdown('''
             * افزودن صفحه بررسی و مقایسه صندوقهای اهرمی
