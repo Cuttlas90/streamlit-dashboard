@@ -767,6 +767,26 @@ class Queries():
             INNER JOIN dollar ON ranked_dates.end_to_period::varchar = dollar.\"Jalali\"
         """
         return query_string
+    
+    def price_query(self, dollar = False):
+        """get stock price"""
+        string = f"""select
+                        date.miladi AS date,
+                        \"openingPrice\" AS open,
+                        \"maxPrice\" AS high,
+                        \"minPrice\" AS low,
+                        \"lastPrice\" AS close,
+                        \"tradeVolume\" AS volume
+                    from
+                        public.stock_price
+                        INNER JOIN stocks ON public.stock_price.stock_id = stocks.id
+                        INNER JOIN date ON public.stock_price.\"tradeDate\" = date.jalali_3::TEXT
+                    where
+                        stocks.name = '{self.name}'
+        """
+        if dollar:
+            string = self._dollar_query(string)
+        return string
 
     QUERY_MONTHLY_COMPARE = """WITH
                         ranked_dates AS (
