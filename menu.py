@@ -27,7 +27,9 @@ def add_list_selector():
     name = st.sidebar.selectbox(
         "لیست سهام",
         options = list_of_name,
-        index=st.session_state.stock_index)
+        index=st.session_state.stock_index,
+        key="stock_slector",
+        disabled=True)
     st.session_state.stock_index = int((df.loc[df['name'] == name].index[0]).astype(str))
     selected_stock = df.iloc[df.loc[df['name'] == name].index[0]]
-    return name, selected_stock
+    return selected_stock
