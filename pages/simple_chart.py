@@ -23,20 +23,7 @@ add_menu()
 if "ver" in st.session_state:
     st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
-if "stock_index" not in st.session_state:
-        st.session_state.stock_index = 0
-df = pd.read_csv("data.csv").dropna()
-list_of_name = df['name'].to_list()
-if "stock" in st.query_params:
-    st.session_state.stock_index = list_of_name.index(st.query_params.stock)
-name = st.sidebar.selectbox(
-    "لیست سهام",
-    options = list_of_name,
-    index=st.session_state.stock_index,
-    key="stock_slector",
-    disabled=True)
-st.session_state.stock_index = int((df.loc[df['name'] == name].index[0]).astype(str))
-selected_stock = df.iloc[df.loc[df['name'] == name].index[0]]
+name, _ = add_list_selector()
 
 dfg = get_stock_monthly(name)
 

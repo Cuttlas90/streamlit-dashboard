@@ -4,7 +4,6 @@ import shutil
 
 import streamlit as st
 import altair as alt
-import pandas as pd
 
 from login import check_local_token
 from pages.helper.monthly_chart import add_monthly_charts
@@ -47,20 +46,8 @@ alt.themes.enable('sfmono')
 
 add_menu()
 st.components.v1.html(MAIN_PAGE, height=60, scrolling=False)
-if "stock_index" not in st.session_state:
-        st.session_state.stock_index = 0
-df = pd.read_csv("data.csv").dropna()
-list_of_name = df['name'].to_list()
-if "stock" in st.query_params:
-    st.session_state.stock_index = list_of_name.index(st.query_params.stock)
-name = st.sidebar.selectbox(
-    "لیست سهام",
-    options = list_of_name,
-    index=st.session_state.stock_index,
-    key="stock_slector",
-    disabled=True)
-st.session_state.stock_index = int((df.loc[df['name'] == name].index[0]).astype(str))
-selected_stock = df.iloc[df.loc[df['name'] == name].index[0]]
+
+name, selected_stock = add_list_selector()
 dollar_toggle = st.sidebar.toggle(
     "نمایش به دلار",
     help="با فعال کردن این گزینه تمامی مبالغ بر اساس دلار بازمحاسبه می گردد."
@@ -69,7 +56,7 @@ st.sidebar.header(f'Vasahm DashBoard `{st.session_state.ver}`')
 
 check_local_token()
 if "token" in st.session_state:
-    queries = Queries(st.session_state.stock_index)
+    queries = Queries(name)
 
     error, stock_data = vasahm_query(queries.get_stock_data())
     if error:
