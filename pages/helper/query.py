@@ -52,7 +52,8 @@ class Queries():
                         INNER JOIN stocks ON public.all_data.stock_id = stocks.id
                         INNER JOIN report_list ON public.all_data.report_id = report_list.id
                     where
-                        public.all_data.column_title IN ('مبلغ فروش (میلیون ریال)' ,'درآمد شناسایی شده', 'درآمد محقق شده طی دوره یک ماهه - لیزینگ')
+                        (public.all_data.column_title IN ('مبلغ فروش (میلیون ریال)' ,'درآمد شناسایی شده', 'درآمد محقق شده طی دوره یک ماهه - لیزینگ')
+                            or public.all_data.column_title LIKE '%درآمد شناساسی شده طی دوره یک ماهه%')
                         and stocks.name = '{self.name}'
                         and public.report_list.\"letterCode\" IN ( 'ن-۳۰', 'ن-۳۱')
                         and public.all_data.deleted = false
