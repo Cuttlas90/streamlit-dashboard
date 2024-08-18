@@ -1,6 +1,7 @@
 """help to plot and add quartely chart for all type of reports"""
 import streamlit as st
 import pandas as pd
+import numpy as np
 import altair as alt
 
 from request import vasahm_query
@@ -50,7 +51,7 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                                             aggfunc='sum').reset_index()
                 pivot_df["profit_ratio"] = (pivot_df["سود(زیان) خالص"].astype(float)
                                                 /pivot_df["جمع درآمدهای عملیاتی"].astype(float))
-
+                pivot_df["profit_ratio"] = pivot_df["profit_ratio"].replace([np.inf, -np.inf], 0)
                 chart_product = alt.Chart(pivot_df).mark_line().encode(
                                     alt.X('end_to_period:N', title='تاریخ'),
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
@@ -97,7 +98,7 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                                             aggfunc='sum').reset_index()
                 pivot_df["profit_ratio"] = (pivot_df["سود(زیان) خالص"].astype(float)
                                                 /pivot_df["جمع درآمدهای عملیاتی"].astype(float))
-
+                pivot_df["profit_ratio"] = pivot_df["profit_ratio"].replace([np.inf, -np.inf], 0)
                 chart_product = alt.Chart(pivot_df).mark_line().encode(
                                     alt.X('end_to_period:N', title='تاریخ'),
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
@@ -170,7 +171,7 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                                             aggfunc='sum').reset_index()
                 pivot_df["profit_ratio"] = (pivot_df['سود خالص'].astype(float)
                                                 /pivot_df['درآمد'].astype(float))
-
+                pivot_df["profit_ratio"] = pivot_df["profit_ratio"].replace([np.inf, -np.inf], 0)
                 chart_product = alt.Chart(pivot_df).mark_line().encode(
                                     alt.X('end_to_period:N', title='تاریخ'),
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
@@ -216,7 +217,7 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                                             aggfunc='sum').reset_index()
                 pivot_df["profit_ratio"] = (pivot_df["سود(زیان) خالص"].astype(float)
                                                 /pivot_df["درآمدهای بیمه ای"].astype(float))
-
+                pivot_df["profit_ratio"] = pivot_df["profit_ratio"].replace([np.inf, -np.inf], 0)
                 chart_product = alt.Chart(pivot_df).mark_line().encode(
                                     alt.X('end_to_period:N', title='تاریخ'),
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
@@ -272,7 +273,7 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                                             aggfunc='sum').reset_index()
                 pivot_df["profit_ratio"] = (pivot_df["سود(زیان) خالص"].astype(float)
                                                 /pivot_df["درآمدهای عملیاتی"].astype(float))
-
+                pivot_df["profit_ratio"] = pivot_df["profit_ratio"].replace([np.inf, -np.inf], 0)
                 chart_product = alt.Chart(pivot_df).mark_line().encode(
                                     alt.X('end_to_period:N', title='تاریخ'),
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
