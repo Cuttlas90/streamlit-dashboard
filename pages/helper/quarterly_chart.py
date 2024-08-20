@@ -14,7 +14,8 @@ def add_quartely_charts(selected_stock, dollar_toggle):
     queries = Queries(selected_stock["name"])
     if selected_stock["cSecValReal"] in [39, 56, 90]:
 
-        error, stock_data = vasahm_query(queries.get_quarterly_investment_sell_and_profit(dollar=dollar_toggle))
+        error, stock_data = vasahm_query(
+            queries.get_quarterly_investment_sell_and_profit(dollar=dollar_toggle))
         if error:
             st.error(stock_data, icon="🚨")
         else:
@@ -24,15 +25,28 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 "value",
                 "end_to_period"])
 
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
                 # specify the type of selection, here single selection is used
+                selection = alt.selection_multi(fields=['row_title'], bind='legend', nearest=True)
                 chart2 = alt.Chart(stock_data_history).mark_area(opacity=0.3).encode(
                         alt.Color('row_title:N', title="سرفصلها"),
                         alt.Y('value:Q', title="مبلغ (میلیون)").stack(None),
-                        alt.X('end_to_period:N',title="تاریخ")
+                        alt.X('end_to_period:N',title="تاریخ"),
+                tooltip=[
+                            alt.Tooltip("row_title:N", title='سرفصل'),
+                            alt.Tooltip("value:Q",  title='میزان'),
+                            ],
+                        opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                ).add_selection(
+                    selection
                 )
 
-                st.altair_chart(chart2, use_container_width=True)
+                points = chart2.mark_point(shape="circle", filled=True, size=80).encode(
+                    opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                )
+                com_chart = chart2 + points
+                st.altair_chart(com_chart, use_container_width=True)
 
 
         error, stock_data = vasahm_query(queries.get_quarterly_investment_profit_ratio())
@@ -44,7 +58,8 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
                 "value",
                 "end_to_period"])
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
                 pivot_df = stock_data_history.pivot_table(index='end_to_period',
                                                             columns='row_title',
                                                             values='value',
@@ -57,11 +72,15 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
                                     # alt.Color('column_name:N', title='دسته ها'),
                             )
-                st.altair_chart(chart_product, use_container_width=True)
+                points = chart_product.mark_point(shape="circle", filled=True, size=80)
+                com_chart = chart_product + points
+                st.altair_chart(com_chart, use_container_width=True)
 
     elif selected_stock["cSecValReal"] in [57]:
 
-        error, stock_data = vasahm_query(queries.get_quarterly_banking_sell_and_profit(dollar=dollar_toggle))
+        error, stock_data = vasahm_query(
+            queries.get_quarterly_banking_sell_and_profit(dollar=dollar_toggle)
+            )
         if error:
             st.error(stock_data, icon="🚨")
         else:
@@ -71,15 +90,28 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 "value",
                 "end_to_period"])
 
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
                 # specify the type of selection, here single selection is used
+                selection = alt.selection_multi(fields=['row_title'], bind='legend', nearest=True)
                 chart2 = alt.Chart(stock_data_history).mark_area(opacity=0.3).encode(
                         alt.Color('row_title:N', title="سرفصلها"),
                         alt.Y('value:Q', title="مبلغ (میلیون)").stack(None),
-                        alt.X('end_to_period:N',title="تاریخ")
+                        alt.X('end_to_period:N',title="تاریخ"),
+                tooltip=[
+                            alt.Tooltip("row_title:N", title='سرفصل'),
+                            alt.Tooltip("value:Q",  title='میزان'),
+                            ],
+                        opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                ).add_selection(
+                    selection
                 )
 
-                st.altair_chart(chart2, use_container_width=True)
+                points = chart2.mark_point(shape="circle", filled=True, size=80).encode(
+                    opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                )
+                com_chart = chart2 + points
+                st.altair_chart(com_chart, use_container_width=True)
 
 
         error, stock_data = vasahm_query(queries.get_quarterly_banking_profit_ratio())
@@ -91,7 +123,8 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
                 "value",
                 "end_to_period"])
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
                 pivot_df = stock_data_history.pivot_table(index='end_to_period',
                                                             columns='row_title',
                                                             values='value',
@@ -104,10 +137,14 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
                                     # alt.Color('column_name:N', title='دسته ها'),
                             )
-                st.altair_chart(chart_product, use_container_width=True)
+                points = chart_product.mark_point(shape="circle", filled=True, size=80)
+                com_chart = chart_product + points
+                st.altair_chart(com_chart, use_container_width=True)
 
     elif selected_stock["cSecValReal"] in [58]:
-        error, stock_data = vasahm_query(queries.get_quarterly_leasing_sell_and_profit(dollar=dollar_toggle))
+        error, stock_data = vasahm_query(
+            queries.get_quarterly_leasing_sell_and_profit(dollar=dollar_toggle)
+            )
         if error:
             st.error(stock_data, icon="🚨")
         else:
@@ -117,28 +154,54 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 "value",
                 "end_to_period"])
 
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
 
-                filtered_df_1 = stock_data_history[~stock_data_history['row_title'].isin(['سود(زیان) خالص', 'سود (زیان) خالص پس از کسر مالیات'])]
-                sum_key1_key2 = stock_data_history[stock_data_history['row_title'].isin(['سود(زیان) خالص', 'سود (زیان) خالص پس از کسر مالیات'])].groupby('end_to_period')['value'].sum().reset_index()
+                filtered_df_1 = stock_data_history[
+                    ~stock_data_history['row_title'].isin(
+                        ['سود(زیان) خالص', 'سود (زیان) خالص پس از کسر مالیات']
+                        )
+                    ]
+                sum_key1_key2 = stock_data_history[
+                    stock_data_history['row_title'].isin(
+                        ['سود(زیان) خالص', 'سود (زیان) خالص پس از کسر مالیات']
+                        )
+                    ].groupby('end_to_period')['value'].sum().reset_index()
                 sum_key1_key2['row_title'] = 'سود خالص'
                 sum_key1_key2 = sum_key1_key2[['row_title', 'value', 'end_to_period']]
                 new_df2 = pd.concat([filtered_df_1, sum_key1_key2], ignore_index=True)
 
-                filtered_df = new_df2[~new_df2['row_title'].isin(['درآمد حاصل از عملیات لیزینگ', 'درآمدهای عملیاتی'])]
-                sum_key1_key2 = new_df2[new_df2['row_title'].isin(['درآمد حاصل از عملیات لیزینگ', 'درآمدهای عملیاتی'])].groupby('end_to_period')['value'].sum().reset_index()
+                filtered_df = new_df2[
+                    ~new_df2['row_title'].isin(['درآمد حاصل از عملیات لیزینگ', 'درآمدهای عملیاتی'])
+                    ]
+
+                sum_key1_key2 = new_df2[
+                    new_df2['row_title'].isin(['درآمد حاصل از عملیات لیزینگ', 'درآمدهای عملیاتی'])
+                    ].groupby('end_to_period')['value'].sum().reset_index()
                 sum_key1_key2['row_title'] = 'درآمد'
                 sum_key1_key2 = sum_key1_key2[['row_title', 'value', 'end_to_period']]
                 new_df = pd.concat([filtered_df, sum_key1_key2], ignore_index=True)
 
                 # specify the type of selection, here single selection is used
+                selection = alt.selection_multi(fields=['row_title'], bind='legend', nearest=True)
                 chart2 = alt.Chart(new_df).mark_area(opacity=0.3).encode(
                         alt.Color('row_title:N', title="سرفصلها"),
                         alt.Y('value:Q', title="مبلغ (میلیون)").stack(None),
-                        alt.X('end_to_period:N',title="تاریخ")
+                        alt.X('end_to_period:N',title="تاریخ"),
+                tooltip=[
+                            alt.Tooltip("row_title:N", title='سرفصل'),
+                            alt.Tooltip("value:Q",  title='میزان'),
+                            ],
+                        opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                ).add_selection(
+                    selection
                 )
 
-                st.altair_chart(chart2, use_container_width=True)
+                points = chart2.mark_point(shape="circle", filled=True, size=80).encode(
+                    opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                )
+                com_chart = chart2 + points
+                st.altair_chart(com_chart, use_container_width=True)
 
 
         error, stock_data = vasahm_query(queries.get_quarterly_leasing_profit_ratio())
@@ -150,21 +213,34 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
                 "value",
                 "end_to_period"])
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
-                
-                filtered_df_1 = stock_data_history[~stock_data_history['row_title'].isin(['سود(زیان) خالص', 'سود (زیان) خالص پس از کسر مالیات'])]
-                sum_key1_key2 = stock_data_history[stock_data_history['row_title'].isin(['سود(زیان) خالص', 'سود (زیان) خالص پس از کسر مالیات'])].groupby('end_to_period')['value'].sum().reset_index()
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
+
+                filtered_df_1 = stock_data_history[
+                    ~stock_data_history['row_title'].isin(
+                        ['سود(زیان) خالص', 'سود (زیان) خالص پس از کسر مالیات']
+                        )
+                    ]
+                sum_key1_key2 = stock_data_history[
+                    stock_data_history['row_title'].isin(
+                        ['سود(زیان) خالص', 'سود (زیان) خالص پس از کسر مالیات']
+                        )
+                    ].groupby('end_to_period')['value'].sum().reset_index()
                 sum_key1_key2['row_title'] = 'سود خالص'
                 sum_key1_key2 = sum_key1_key2[['row_title', 'value', 'end_to_period']]
                 new_df2 = pd.concat([filtered_df_1, sum_key1_key2], ignore_index=True)
 
-                filtered_df = new_df2[~new_df2['row_title'].isin(['درآمد حاصل از عملیات لیزینگ', 'درآمدهای عملیاتی'])]
-                sum_key1_key2 = new_df2[new_df2['row_title'].isin(['درآمد حاصل از عملیات لیزینگ', 'درآمدهای عملیاتی'])].groupby('end_to_period')['value'].sum().reset_index()
+                filtered_df = new_df2[
+                    ~new_df2['row_title'].isin(['درآمد حاصل از عملیات لیزینگ', 'درآمدهای عملیاتی'])
+                    ]
+                sum_key1_key2 = new_df2[
+                    new_df2['row_title'].isin(['درآمد حاصل از عملیات لیزینگ', 'درآمدهای عملیاتی'])
+                    ].groupby('end_to_period')['value'].sum().reset_index()
                 sum_key1_key2['row_title'] = 'درآمد'
                 sum_key1_key2 = sum_key1_key2[['row_title', 'value', 'end_to_period']]
                 new_df = pd.concat([filtered_df, sum_key1_key2], ignore_index=True)
 
-                
+
                 pivot_df = new_df.pivot_table(index='end_to_period',
                                                             columns='row_title',
                                                             values='value',
@@ -177,10 +253,14 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
                                     # alt.Color('column_name:N', title='دسته ها'),
                             )
-                st.altair_chart(chart_product, use_container_width=True)
+                points = chart_product.mark_point(shape="circle", filled=True, size=80)
+                com_chart = chart_product + points
+                st.altair_chart(com_chart, use_container_width=True)
 
     elif selected_stock["cSecValReal"] in [66]:
-        error, stock_data = vasahm_query(queries.get_quarterly_insurance_sell_and_profit(dollar=dollar_toggle))
+        error, stock_data = vasahm_query(
+            queries.get_quarterly_insurance_sell_and_profit(dollar=dollar_toggle)
+            )
         if error:
             st.error(stock_data, icon="🚨")
         else:
@@ -190,15 +270,28 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 "value",
                 "end_to_period"])
 
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
                 # specify the type of selection, here single selection is used
+                selection = alt.selection_multi(fields=['row_title'], bind='legend', nearest=True)
                 chart2 = alt.Chart(stock_data_history).mark_area(opacity=0.3).encode(
                         alt.Color('row_title:N', title="سرفصلها"),
                         alt.Y('value:Q', title="مبلغ (میلیون)").stack(None),
-                        alt.X('end_to_period:N',title="تاریخ")
+                        alt.X('end_to_period:N',title="تاریخ"),
+                tooltip=[
+                            alt.Tooltip("row_title:N", title='سرفصل'),
+                            alt.Tooltip("value:Q",  title='میزان'),
+                            ],
+                        opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                ).add_selection(
+                    selection
                 )
 
-                st.altair_chart(chart2, use_container_width=True)
+                points = chart2.mark_point(shape="circle", filled=True, size=80).encode(
+                    opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                )
+                com_chart = chart2 + points
+                st.altair_chart(com_chart, use_container_width=True)
 
 
         error, stock_data = vasahm_query(queries.get_quarterly_insurance_profit_ratio())
@@ -210,7 +303,8 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
                 "value",
                 "end_to_period"])
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
                 pivot_df = stock_data_history.pivot_table(index='end_to_period',
                                                             columns='row_title',
                                                             values='value',
@@ -223,7 +317,9 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
                                     # alt.Color('column_name:N', title='دسته ها'),
                             )
-                st.altair_chart(chart_product, use_container_width=True)
+                points = chart_product.mark_point(shape="circle", filled=True, size=80)
+                com_chart = chart_product + points
+                st.altair_chart(com_chart, use_container_width=True)
 
     # elif selected_stock["cSecValReal"] in [67]:
     #     pass
@@ -236,7 +332,9 @@ def add_quartely_charts(selected_stock, dollar_toggle):
     #     pass
     else:
 
-        error, stock_data = vasahm_query(queries.get_quarterly_sell_and_profit(dollar=dollar_toggle))
+        error, stock_data = vasahm_query(
+            queries.get_quarterly_sell_and_profit(dollar=dollar_toggle)
+            )
         if error:
             st.error(stock_data, icon="🚨")
         else:
@@ -246,15 +344,29 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 "value",
                 "end_to_period"])
 
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
                 # specify the type of selection, here single selection is used
-                chart2 = alt.Chart(stock_data_history).mark_area(opacity=0.3).encode(
+                selection = alt.selection_multi(fields=['row_title'], bind='legend', nearest=True)
+
+                chart2 = alt.Chart(stock_data_history).mark_area().encode(
                         alt.Color('row_title:N', title="سرفصلها"),
                         alt.Y('value:Q', title="مبلغ (میلیون)").stack(None),
-                        alt.X('end_to_period:N',title="تاریخ")
+                        alt.X('end_to_period:N',title="تاریخ"),
+                        tooltip=[
+                            alt.Tooltip("row_title:N", title='سرفصل'),
+                            alt.Tooltip("value:Q",  title='میزان'),
+                            ],
+                        opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                ).add_selection(
+                    selection
                 )
 
-                st.altair_chart(chart2, use_container_width=True)
+                points = chart2.mark_point(shape="circle", filled=True, size=80).encode(
+                    opacity=alt.condition(selection, alt.value(1), alt.value(0))
+                )
+                com_chart = chart2 + points
+                st.altair_chart(com_chart, use_container_width=True)
 
 
         error, stock_data = vasahm_query(queries.get_quarterly_profit_ratio())
@@ -266,7 +378,8 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                 stock_data_history = pd.DataFrame(stock_data, columns=["row_title",
                 "value",
                 "end_to_period"])
-                stock_data_history["end_to_period"] = stock_data_history["end_to_period"].astype(str)
+                stock_data_history["end_to_period"] = stock_data_history[
+                    "end_to_period"].astype(str)
                 pivot_df = stock_data_history.pivot_table(index='end_to_period',
                                                             columns='row_title',
                                                             values='value',
@@ -279,4 +392,7 @@ def add_quartely_charts(selected_stock, dollar_toggle):
                                     alt.Y('profit_ratio:Q', title="میزان عمکرد").axis(format='%'),
                                     # alt.Color('column_name:N', title='دسته ها'),
                             )
-                st.altair_chart(chart_product, use_container_width=True)
+
+                points = chart_product.mark_point(shape="circle", filled=True, size=80)
+                com_chart = chart_product + points
+                st.altair_chart(com_chart, use_container_width=True)
