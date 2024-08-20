@@ -36,6 +36,7 @@ class Queries():
                     where
                         stocks.name = '{self.name}'
                         and source = '{source}'
+                    ORDER BY date DESC
                     LIMIT
 						30
 
