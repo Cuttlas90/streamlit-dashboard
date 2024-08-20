@@ -50,7 +50,7 @@ if "token" in st.session_state:
                 alt.X('date:N',title="تاریخ")
             )
             st.altair_chart(chart, use_container_width=True)
-    
+
     error, stock_data = vasahm_query(queries.get_daily_social('rahavard'))
     if error:
         st.error(stock_data, icon="🚨")
@@ -60,7 +60,8 @@ if "token" in st.session_state:
             stock_data_history = pd.DataFrame(stock_data, columns=["index",
             "number",
             "date"])
-
+            stock_data_history['index'].replace('daily_anslysis_no','تحلیلهای روزانه', inplace=True)
+            stock_data_history['index'].replace('daily_comment_no','کامنتهای روزانه', inplace=True)
             chart = alt.Chart(stock_data_history).mark_bar().encode(
                 alt.Color('index:N', title="سرفصلها"),
                 alt.Y('number:Q', title="تعداد کامنت"),
