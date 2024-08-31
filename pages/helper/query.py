@@ -743,6 +743,7 @@ class Queries():
                         INNER JOIN table_code ON public.all_data.table_id = table_code.id
                     where
                         public.all_data.row_title IN ('جمع درآمدهای عملیاتی','سود(زیان) ناخالص','سود(زیان) خالص')
+                        and public.all_data.sell_type IN ('عملیات در حال تداوم:','عملیات متوقف شده:','هزینه ها')
                         and stocks.name = '{self.name}'
                         and (public.report_list.\"letterCode\" = 'ن-۱۰')
                         and public.all_data.deleted = false
