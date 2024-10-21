@@ -15,6 +15,8 @@ def add_menu():
     # st.sidebar.page_link("pages/simple_chart.py", label="نمودار ساده ماهانه", icon="📋")
     st.sidebar.page_link("pages/changelog.py", label="تازه ها", icon="💬")
 
+def _change_index(df):
+    st.session_state.stock_index = int((df.loc[df['name'] == st.session_state.select_stock].index[0]).astype(str))
 
 def add_list_selector():
     """create and init list selector"""
@@ -27,7 +29,10 @@ def add_list_selector():
     name = st.sidebar.selectbox(
         "لیست سهام",
         options = list_of_name,
-        index=st.session_state.stock_index)
-    st.session_state.stock_index = int((df.loc[df['name'] == name].index[0]).astype(str))
+        index=st.session_state.stock_index,
+        on_change=_change_index,
+        args=[df],
+        key='select_stock')
+    # st.session_state.stock_index = int((df.loc[df['name'] == name].index[0]).astype(str))
     selected_stock = df.iloc[df.loc[df['name'] == name].index[0]]
     return name, selected_stock

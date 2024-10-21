@@ -4,6 +4,7 @@ import shutil
 
 import streamlit as st
 import altair as alt
+import pandas as pd
 
 from login import check_local_token
 from pages.helper.monthly_chart import add_monthly_charts
@@ -76,10 +77,22 @@ if "token" in st.session_state:
                 "P/E صنعت",
                 f"{format(float(stock_data[0]['sectorPE']), '.2f')}"
                 )
-            col4.metric(
-                "درصد سهامداران عمده",
-                f"{format(stock_data[0]['all_holder_percent'], '.2f')}"
-                )
+            source = pd.DataFrame({
+                "category": ["سهامدار عمده", "سهامدار خرد"],
+                "value": [stock_data[0]['all_holder_percent'], 100- stock_data[0]['all_holder_percent']]
+            })
+
+            chart = alt.Chart(source, height=90).mark_arc(innerRadius=10, outerRadius=30).encode(
+                # theta="value",
+                theta=alt.Theta("value", title="درصد"),
+                color=alt.Color('category:N', title="سهامدار"),
+                # autoSize=alt.AutoSizeParams(contains='content', type='fit')
+            )
+            col4.altair_chart(chart, use_container_width=True)
+            # col4.metric(
+            #     "درصد سهامداران عمده",
+            #     f"{format(stock_data[0]['all_holder_percent'], '.2f')}"
+            #     )
         # pylint: disable=bare-except
         except:
             pass
