@@ -831,6 +831,7 @@ class Queries():
                                 AND public.all_data.column_title IN ('مبلغ فروش (میلیون ریال)','درآمد شناسایی شده')
                                 and public.report_list.\"letterCode\" IN ( 'ن-۳۰', 'ن-۳۱')
                                 and public.all_data.deleted = false
+                                and public.all_data.row_title NOT IN ('برگشت از فروش:', 'جمع', 'جمع برگشت از فروش', 'جمع درآمد ارائه خدمات', 'جمع فروش داخلی', 'جمع فروش صادراتی', 'درآمد ارائه خدمات:', 'فروش داخلی:', 'فروش صادراتی:', '')
                             group by
                                 stocks.name,
                                 public.all_data.end_to_period
